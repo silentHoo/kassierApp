@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc function
- * @name kassierAppApp.controller:AboutCtrl
+ * @name kassierApp.controller:AboutCtrl
  * @description
  * # AboutCtrl
- * Controller of the kassierAppApp
+ * Controller of the kassierApp
  */
-angular.module('kassierAppApp')
+angular.module('kassierApp')
   .controller('AboutCtrl', function () {
     this.awesomeThings = [
       'HTML5 Boilerplate',
