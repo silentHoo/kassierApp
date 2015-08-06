@@ -1,23 +1,52 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
+<!--
+- Button: Neue Bestellung:
+  1) Tisch-Nr. (falls Tisch-Nr. vorhanden, überschreiben)
+  2) Liste aller Getränke/Speisen als Liste -> Tap auf Zeile = +1; Tap auf (-) = -1
+- Bestellungen anzeigen
+  - Liste mit allen Tisch-Nr.
+  - Auswahl einer Liste zeigt Liste wie in 2)
+- Abholung:
+  Akkumulierte Liste, sortiert nach:
+    - Bierschank
+    - Getränkeausgabe
+    - Essen
+- Abrechnung
+  - Liste aller Positionen:
+    -> Button "Alles zusammen"
+    -> Tap auf Eintrag fügt Artikel zu "Abrechnungsliste" darunter hinzu; (-) entfernt ihn; Nummer zählt bei (+) runter bei (-) hoch
+    -> Einzelpreise + Gesamtsumme wird immer automatisch berechnet
+-->
+
+<div class="container-fluid">
+  <div class="row padding">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" ng-class="{'active': activeTab == 1}" ng-click="activeTab = 1" ng-init="activeTab = 1">
+        <a href="" role="tab" data-toggle="tab">Bestellungen</a>
+      </li>
+      <li role="presentation" ng-class="{'active': activeTab == 2}" ng-click="activeTab = 2">
+        <a href="" role="tab" data-toggle="tab">Abholung</a>
+      </li>
+      <li role="presentation" ng-class="{'active': activeTab == 3}" ng-click="activeTab = 3">
+        <a href="" role="tab" data-toggle="tab">Abrechnung</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" ng-class="{'active': activeTab == 1}" id="1">
+        <div ng-include="'/views/orders.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" ng-class="{'active': activeTab == 2}" id="2">
+        <div ng-include="'/views/pickup.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" ng-class="{'active': activeTab == 3}" id="3">
+        <div ng-include="'/views/billing.html'"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
-</div>
+<script>
+  $('.nav').tab();
+</script>

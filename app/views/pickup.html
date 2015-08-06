@@ -1,0 +1,39 @@
+<div class="padding">
+  <div class="row no-entries" ng-if="orders.length == 0">
+    Keine Bestellungen vorhanden.
+  </div>
+
+  <div class="page-header">
+    <h3>Alkoholische Getränke</h3>
+  </div>
+
+  <div class="list-group">
+    <div class="list-group-item" ng-repeat="o in pickup['alc']">
+      <span class="badge">{{o.count}}</span>
+      {{o.name}}
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h3>Speisen</h3>
+  </div>
+
+  <div class="list-group">
+    <div class="list-group-item" ng-repeat="o in pickup['fod']">
+      <span class="badge">{{o.count}}</span>
+      {{o.name}}
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h3>Alkoholfreie Getränke</h3>
+  </div>
+
+  <div class="list-group">
+    <div class="list-group-item" ng-repeat="o in pickup['alf']">
+      <span class="badge">{{o.count}}</span>
+      {{o.name}}
+    </div>
+  </div>
+
+</div>

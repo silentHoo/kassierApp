@@ -1,0 +1,86 @@
+<div class="padding">
+  <div class="row">
+    <div class="padding">
+      <button type="button" ng-show="!showOrder" class="btn btn-primary pull-right" ng-click="openOrder()">
+        <span class="glyphicon glyphicon-plus"></span> Neue Bestellung
+      </button>
+
+      <div ng-show="showOrder">
+        <button type="button" class="btn btn-success pull-right" ng-click="closeOrder()">
+          <span class="glyphicon glyphicon-check"></span> Bestellung schließen
+        </button>
+
+        <button type="button" class="btn btn-danger pull-right" style="margin-right: 15px;" ng-click="closeOrder(true)">
+          <span class="glyphicon glyphicon-remove"></span> Abbrechen ({{abortCounter}})
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row no-entries" ng-if="!showOrder && orders.length == 0">
+    Keine Bestellungen vorhanden.
+  </div>
+
+  <div class="row padding" ng-if="showOrder">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-offset-3 col-xs-6 form-group">
+          <input type="number" style="height: 60px; font-size: 32px" class="form-control" placeholder="Tisch-Nr." ng-model="$parent.$parent.tableNumber">
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h3>Alkoholische Getränke</h3>
+    </div>
+
+    <div class="list-group">
+      <a class="list-group-item" ng-repeat="o in alc" ng-click="addArticle(o)">
+        <span class="badge">{{countOf(o)}}</span>
+        <button type="button" style="margin-right: 15px;" class="btn-xs btn-danger pull-right" ng-click="removeArticle(o, $event)">
+          <span class="glyphicon glyphicon-minus"></span>
+        </button>
+        {{o.name}}
+      </a>
+    </div>
+
+    <div class="page-header">
+      <h3>Speisen</h3>
+    </div>
+
+    <div class="list-group">
+      <a class="list-group-item" ng-repeat="o in fod" ng-click="addArticle(o)">
+        <span class="badge">{{countOf(o)}}</span>
+        <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticle(o, $event)">
+          <span class="glyphicon glyphicon-minus"></span>
+        </button>
+        {{o.name}}
+      </a>
+    </div>
+
+    <div class="page-header">
+      <h3>Alkoholfreie Getränke</h3>
+    </div>
+
+    <div class="list-group">
+      <a class="list-group-item" ng-repeat="o in alf" ng-click="addArticle(o)">
+        <span class="badge">{{countOf(o)}}</span>
+        <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticle(o, $event)">
+          <span class="glyphicon glyphicon-minus"></span>
+        </button>
+        {{o.name}}
+      </a>
+    </div>
+  </div>
+
+  <!-- Übersicht -->
+  <div class="row padding" ng-if="!showOrder && orders.length > 0">
+    <div class="list-group">
+      <a class="list-group-item" ng-repeat="o in orders" ng-click="openOrderFromExistingOrder(o)">
+        <span class="badge">{{o.articles.length}}</span>
+        Tisch-Nr.: {{o.tableNumber}}
+      </a>
+    </div>
+  </div>
+</div>

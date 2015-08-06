@@ -1,0 +1,91 @@
+<div class="padding">
+  <div class="row no-entries" ng-if="orders.length == 0">
+    Keine Bestellungen vorhanden.
+  </div>
+
+  <!-- Übersicht -->
+  <div class="row padding" ng-if="!showBilling && orders.length > 0">
+    <div class="list-group">
+      <a class="list-group-item" ng-repeat="o in orders" ng-click="makeBillForOrder(o)">
+        <span class="badge">{{o.articles.length}}</span>
+        Tisch-Nr.: {{o.tableNumber}}
+      </a>
+    </div>
+  </div>
+
+  <div class="row" ng-if="showBilling">
+    <div class="padding">
+      <button type="button" class="btn btn-default pull-right" ng-click="addAllArticlesToBill()">Alles zusammen</button>
+
+      <button type="button" class="btn btn-danger pull-right" style="margin-right: 15px;" ng-click="closeBilling()">
+        <span class="glyphicon glyphicon-remove"></span> Abbrechen
+      </button>
+    </div>
+
+    <div class="padding">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <div style="font-size: 24px">Tisch-Nr.: {{currentBillingOrder.tableNumber}}</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <div style="font-size: 32px">
+              Summe: 14,30 €
+            </div>
+          </div>
+          <div class="col-xs-12 text-center">
+            <button type="button" class="btn btn-success" ng-click="payBill()">
+              <span class="glyphicon glyphicon-euro"></span> AppKassieren!
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="page-header">
+        <h3>Alkoholische Getränke</h3>
+      </div>
+
+      <div class="list-group">
+        <a class="list-group-item" ng-repeat="o in billAlc" ng-click="addArticleToBill(o)">
+          <span class="badge">{{inverseCountOfBill(o)}}</span>
+          <button type="button" style="margin-right: 15px;" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+          {{o.name}}, {{o.price | number:2}} €
+        </a>
+      </div>
+
+      <div class="page-header">
+        <h3>Speisen</h3>
+      </div>
+
+      <div class="list-group">
+        <a class="list-group-item" ng-repeat="o in billFod" ng-click="addArticleToBill(o)">
+          <span class="badge">{{inverseCountOfBill(o)}}</span>
+          <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+          {{o.name}}, {{o.price | number:2}} €
+        </a>
+      </div>
+
+      <div class="page-header">
+        <h3>Alkoholfreie Getränke</h3>
+      </div>
+
+      <div class="list-group">
+        <a class="list-group-item" ng-repeat="o in billAlf" ng-click="addArticleToBill(o)">
+          <span class="badge">{{inverseCountOfBill(o)}}</span>
+          <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+          {{o.name}}, {{o.price | number:2}} €
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

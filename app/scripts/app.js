@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc overview
- * @name kassierAppApp
+ * @name kassierApp
  * @description
- * # kassierAppApp
+ * # kassierApp
  *
  * Main module of the application.
  */
 angular
-  .module('kassierAppApp', [
+  .module('kassierApp', [
     'ngAnimate',
     'ngCookies',
     'ngMessages',
