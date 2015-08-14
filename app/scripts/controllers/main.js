@@ -153,20 +153,44 @@ angular.module('kassierApp')
      * functions for billing
      */
     $scope.showBilling = false;
-    $scope.billAlc = [];
-    $scope.billAlf = [];
-    $scope.billFod = [];
+    var initBilling = function() {
+      $scope.bill = {
+        alc: [],
+        alf: [],
+        fod: []
+      };
+      $scope.billingSum = 0;
+      $scope.billList = [];
+      $scope.aggregatedBillList = [];
+      $scope.currentBillingOrder = [];
+    };
+    initBilling();
+
+    var calculateBillCategories = function(order) {
+      ['alc', 'alf', 'fod'].forEach(function(cat) {
+        var counts = {};
+        order.articles.filter(function(a) {
+          return a.cat === cat;
+        }).map(function(a) {
+          return a.name
+        }).forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+
+        var result = [];
+        for (var o in counts) {
+          result.push({
+            cat: cat,
+            name: o,
+            price: getArticleByName(String(o)).price
+          });
+        }
+        $scope.bill[cat] = result;
+      });
+    };
+
     $scope.makeBillForOrder = function(order) {
+      initBilling();
       $scope.currentBillingOrder = order;
-      $scope.billAlc = order.articles.filter(function(e) {
-        return e.cat === 'alc';
-      });
-      $scope.billAlf = order.articles.filter(function(e) {
-        return e.cat === 'alf';
-      });
-      $scope.billFod = order.articles.filter(function(e) {
-        return e.cat === 'fod';
-      });
+      calculateBillCategories($scope.currentBillingOrder);
       $scope.showBilling = true;
     };
 
@@ -174,35 +198,114 @@ angular.module('kassierApp')
       $scope.showBilling = false;
     };
 
+    var getArticleCountIn = function(article, list) {
+      return list.filter(function(e) {
+        return e.cat === article.cat && e.name === article.name;
+      }).length;
+    };
+
     $scope.inverseCountOfBill = function(article) {
       var billListCount = $scope.billList.filter(function(e) {
         return e.cat === article.cat && e.name === article.name;
       }).length;
 
-      var orderListCount = $scope.currentBillingOrder.articles.filter(function(e) {
-        return e.cat === article.cat && e.name === article.name;
-      }).length;
+      var orderListCount = getArticleCountIn(article, $scope.currentBillingOrder.articles);
 
       return orderListCount - billListCount;
     };
 
-    $scope.billList = [];
+
     $scope.addArticleToBill = function(article) {
-      $scope.billList.push(article);
+      if ($scope.inverseCountOfBill(article) != 0) {
+        $scope.billList.push(article);
+        $scope.billingSum += article.price;
+      }
     };
 
     $scope.removeArticleFromBill = function(article) {
-      $scope.billList.splice($scope.billList.indexOf(article), 1);
+      var totalCountOfThisArticle = $scope.currentBillingOrder.articles.filter(function(e) {
+        return e.cat === article.cat && e.name === article.name;
+      }).length;
+      if ($scope.inverseCountOfBill(article) != totalCountOfThisArticle) {
+        $scope.billList.splice($scope.billList.indexOf(article), 1);
+        $scope.billingSum -= article.price;
+      }
       event.stopPropagation();
     };
 
+    $scope.$watch('billingSum', function(newValue, oldValue) {
+      $scope.aggregatedBillList = calcArticleTotalCountAggregation();
+    });
+
     $scope.addAllArticlesToBill = function() {
       $scope.billList = [];
-      $scope.billList.push($scope.currentBillingOrder.articles);
+      $scope.billingSum = 0;
+      $scope.billList = angular.copy($scope.currentBillingOrder.articles);
+      $scope.billList.forEach(function(article) {
+        $scope.billingSum += article.price;
+      });
     };
 
     $scope.payBill = function() {
       // 1) remove all $scope.billList items from $scope.currentBillingOrder
+      $scope.currentBillingOrder.articles = $scope.currentBillingOrder.articles.filter(function(a) {
+        var filter = true;
+        console.log($scope.aggregatedBillList);
+        var articleCountToDelete = $scope.aggregatedBillList.filter(function(b) {
+          return b.article.cat === a.cat && b.article.name === a.name;
+        });
+        console.log(articleCountToDelete);
+        $scope.billList.forEach(function(article) {
+          if (a.cat === article.cat && a.name === article.name) {
+            filter = false;
+          }
+        });
+        if (!filter) {
+          console.log('remove:');
+          console.log(a);
+        }
+        return filter;
+      });
+      $scope.billList = [];
+
+      calculateBillCategories($scope.currentBillingOrder);
+      $scope.billingSum = 0; // trigers also recalculating of aggregatedBillList
+
       // 2) if there are no elements left on $scope.currentBillingOrder, delete tableNumber from $scope.orders
+      if ($scope.currentBillingOrder.articles.length == 0) {
+        $scope.orders = $scope.orders.filter(function(order) {
+          return $scope.currentBillingOrder.tableNumber !== order.tableNumber;
+        });
+        $scope.showBilling = false;
+      }
+    };
+
+    var getArticleByName = function(name) {
+      return $scope.articles.filter(function(e) {
+        return e.name === name;
+      })[0];
+    };
+
+    var calcArticleTotalCountAggregation = function() {
+      var counts = {};
+      $scope.billList
+        .map(function(e) {
+          return e.name
+        })
+        .forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+
+      var result = [];
+      for (var o in counts) {
+        var article = getArticleByName(String(o));
+        var price = article.price;
+        result.push({
+          count: counts[o],
+          name: o,
+          singlePrice: price,
+          sum: counts[o] * price,
+          article: article
+        });
+      }
+      return result;
     };
   });

@@ -33,9 +33,44 @@
         <div class="row">
           <div class="col-xs-12 text-center">
             <div style="font-size: 32px">
-              Summe: 14,30 €
+              Summe: {{billingSum | number:2}} €
             </div>
           </div>
+        </div>
+
+        <br><br>
+
+        <div class="row">
+          <div class="table">
+            <table class="table">
+              <tr>
+                <th>Artikel</th>
+                <th>Anzahl</th>
+                <th>Einzelpreis</th>
+                <th>Summe</th>
+                <th></th>
+              </tr>
+              <tr ng-repeat="o in aggregatedBillList">
+                <td>{{o.name}}</td>
+                <td>{{o.count}}</td>
+                <td>{{o.singlePrice}}</td>
+                <td>{{o.sum | number:2}}</td>
+                <td>
+                  <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o.article, $event)">
+                    <span class="glyphicon glyphicon-minus"></span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>{{billingSum | number:2}}</strong></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+
           <div class="col-xs-12 text-center">
             <button type="button" class="btn btn-success" ng-click="payBill()">
               <span class="glyphicon glyphicon-euro"></span> AppKassieren!
@@ -50,7 +85,7 @@
       </div>
 
       <div class="list-group">
-        <a class="list-group-item" ng-repeat="o in billAlc" ng-click="addArticleToBill(o)">
+        <a class="list-group-item" ng-repeat="o in bill['alc']" ng-click="addArticleToBill(o)">
           <span class="badge">{{inverseCountOfBill(o)}}</span>
           <button type="button" style="margin-right: 15px;" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
             <span class="glyphicon glyphicon-minus"></span>
@@ -64,7 +99,7 @@
       </div>
 
       <div class="list-group">
-        <a class="list-group-item" ng-repeat="o in billFod" ng-click="addArticleToBill(o)">
+        <a class="list-group-item" ng-repeat="o in bill['fod']" ng-click="addArticleToBill(o)">
           <span class="badge">{{inverseCountOfBill(o)}}</span>
           <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
             <span class="glyphicon glyphicon-minus"></span>
@@ -78,7 +113,7 @@
       </div>
 
       <div class="list-group">
-        <a class="list-group-item" ng-repeat="o in billAlf" ng-click="addArticleToBill(o)">
+        <a class="list-group-item" ng-repeat="o in bill['alf']" ng-click="addArticleToBill(o)">
           <span class="badge">{{inverseCountOfBill(o)}}</span>
           <button type="button" style="margin-right: 15px" class="btn-xs btn-danger pull-right" ng-click="removeArticleFromBill(o, $event)">
             <span class="glyphicon glyphicon-minus"></span>
